@@ -1,25 +1,31 @@
+require('dotenv').config();
 const express = require('express');
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const mongoose = require('mongoose');
 
 const app = express();
-const PORT = process.env.PORT || 5000;
-const JWT_SECRET = 'your_jwt_secret';
+const PORT = process.env.PORT || 5500;
+const JWT_SECRET = process.env.JWT_SECRET;
 
 // Middleware
 app.use(bodyParser.json());
 app.use(cors());
 
-// MongoDB connection
-mongoose.connect('mongodb://localhost:27017/classchronicle', {
+// MongoDB connection using Mongoose
+mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-})
-.then(() => console.log('MongoDB connected'))
-.catch(err => console.log(err));
+  
+});
+const db = mongoose.connection;
+
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+db.once('open', () => {
+  console.log('Connected to MongoDB');
+});
 
 // User Schema
 const userSchema = new mongoose.Schema({
