@@ -19,6 +19,25 @@
       border-radius: 10px;
       box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
     }
+    #calendar {
+      margin-top: 20px;
+    }
+    #attendanceCounts {
+      margin-top: 20px;
+    }
+    .bg-present {
+      background-color: #28a745;
+      color: #fff;
+    }
+    .bg-absent {
+      background-color: #dc3545;
+      color: #fff;
+      text-decoration: line-through;
+    }
+    .bg-late {
+      background-color: #ffc107;
+      color: #fff;
+    }
   </style>
 </head>
 <body>
@@ -34,10 +53,13 @@
           <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#features">Features</a>
+          <a class="nav-link" href="aboutus.html">About Us</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#contact">Contact</a>
+          <a class="nav-link" href="#" onclick="logout()">Logout</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="contact.html">Contact</a>
         </li>
       </ul>
     </div>
@@ -57,7 +79,7 @@
       <div class="col-md-8">
         <div class="attendance-form">
           <h2 class="text-center">Record Attendance</h2>
-          <form>
+          <form id="attendanceForm">
             <div class="form-group">
               <label for="studentName">Student Name</label>
               <input type="text" class="form-control" id="studentName" placeholder="Enter student name">
@@ -73,14 +95,48 @@
             <div class="form-group">
               <label for="attendanceStatus">Attendance Status</label>
               <select class="form-control" id="attendanceStatus">
-                <option>Present</option>
-                <option>Absent</option>
-                <option>Late</option>
+                <option value="Present">Present</option>
+                <option value="Absent">Absent</option>
+                <option value="Late">Late</option>
               </select>
             </div>
             <button type="submit" class="btn btn-primary btn-block">Submit</button>
           </form>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Calendar Section -->
+  <div id="calendar" class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <h2 class="text-center">Attendance Calendar</h2>
+        <div id="calendarBody" class="text-center"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Attendance Counts Section -->
+  <div id="attendanceCounts" class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <h2 class="text-center">Attendance Counts</h2>
+        <p id="presentCount" class="lead text-success"></p>
+        <p id="absentCount" class="lead text-danger"></p>
+        <p id="lateCount" class="lead text-warning"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Overview Section -->
+  <div id="overview" class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <h2 class="text-center">Overview</h2>
+        <p id="totalClasses" class="lead"></p>
+        <p id="upcomingClasses" class="lead"></p>
+        <p id="recentAttendance" class="lead"></p>
       </div>
     </div>
   </div>
@@ -98,6 +154,152 @@
     if (!token) {
       window.location.href = 'signin.html';
     }
+
+    function logout() {
+      localStorage.removeItem('token');
+      window.location.href = 'signin.html';
+    }
+
+    // Constants for location-based sign-in
+    const HOST_LAT = 40.7128; // Replace with the host device's latitude
+    const HOST_LON = -74.0060; // Replace with the host device's longitude
+    const RADIUS = 0.5; // Radius in kilometers
+
+    document.addEventListener('DOMContentLoaded', function () {
+      // Initialize variables
+      const attendanceForm = document.getElementById('attendanceForm');
+      const calendarBody = document.getElementById('calendarBody');
+      const presentCount = document.getElementById('presentCount');
+      const absentCount = document.getElementById('absentCount');
+      const lateCount = document.getElementById('lateCount');
+      const totalClasses = document.getElementById('totalClasses');
+      const upcomingClasses = document.getElementById('upcomingClasses');
+      const recentAttendance = document.getElementById('recentAttendance');
+      let attendanceData = JSON.parse(localStorage.getItem('attendanceData')) || [];
+
+      // Calculate distance between two points using Haversine formula
+      function getDistance(lat1, lon1, lat2, lon2) {
+        const R = 6371; // Radius of the Earth in kilometers
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLon = (lon2 - lon1) * Math.PI / 180;
+        const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                  Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                  Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        const distance = R * c;
+        return distance;
+      }
+
+      // Initialize calendar
+      function initializeCalendar() {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = today.getMonth();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+        let calendarHTML = '<table class="table table-bordered"><thead><tr>';
+        calendarHTML += '<th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th>';
+        calendarHTML += '</tr></thead><tbody><tr>';
+
+        let dayOfWeek = new Date(year, month, 1).getDay();
+        for (let i = 0; i < dayOfWeek; i++) {
+          calendarHTML += '<td></td>';
+        }
+
+        for (let day = 1; day <= daysInMonth; day++) {
+          const dateKey = `${year}-${month + 1}-${day}`;
+          let classToAdd = '';
+
+          if (attendanceData.includes(dateKey)) {
+            classToAdd = 'bg-present'; // Present
+          } else if (attendanceData.includes(`${dateKey} (Absent)`)) {
+            classToAdd = 'bg-absent'; // Absent
+          } else if (attendanceData.includes(`${dateKey} (Late)`)) {
+            classToAdd = 'bg-late'; // Late
+          }
+
+          calendarHTML += `<td class="${classToAdd}">${day}</td>`;
+
+          if (new Date(year, month, day).getDay() === 6 && day !== daysInMonth) {
+            calendarHTML += '</tr><tr>';
+          }
+        }
+
+        calendarHTML += '</tr></tbody></table>';
+        calendarBody.innerHTML = calendarHTML;
+
+        // Calculate counts
+        const presentCountValue = attendanceData.filter(date => !date.includes('(Absent)') && !date.includes('(Late)')).length;
+        const absentCountValue = attendanceData.filter(date => date.includes('(Absent)')).length;
+        const lateCountValue = attendanceData.filter(date => date.includes('(Late)')).length;
+
+        presentCount.textContent = `Present Count: ${presentCountValue}`;
+        absentCount.textContent = `Absent Count: ${absentCountValue}`;
+        lateCount.textContent = `Late Count: ${lateCountValue}`;
+
+        // Store attendance data in localStorage
+        localStorage.setItem('attendanceData', JSON.stringify(attendanceData));
+
+        // Update overview section
+        totalClasses.textContent = `Total Classes: ${presentCountValue + absentCountValue + lateCountValue}`;
+        upcomingClasses.textContent = `Upcoming Classes: ${getUpcomingClasses().join(', ')}`;
+        recentAttendance.textContent = `Recent Attendance: ${getRecentAttendance().join(', ')}`;
+      }
+
+      // Get upcoming classes
+      function getUpcomingClasses() {
+        const today = new Date();
+        const upcomingClasses = [];
+        for (let i = 1; i <= 7; i++) {
+          const upcomingDate = new Date(today);
+          upcomingDate.setDate(today.getDate() + i);
+          upcomingClasses.push(`${upcomingDate.getFullYear()}-${upcomingDate.getMonth() + 1}-${upcomingDate.getDate()}`);
+        }
+        return upcomingClasses;
+      }
+
+      // Get recent attendance
+      function getRecentAttendance() {
+        const recentAttendance = attendanceData.slice(-5);
+        return recentAttendance.map(date => date.replace('(Absent)', 'Absent').replace('(Late)', 'Late'));
+      }
+
+      // Form submission handler
+      attendanceForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        // Get student location
+        navigator.geolocation.getCurrentPosition(function (position) {
+          const studentLat = position.coords.latitude;
+          const studentLon = position.coords.longitude;
+          const distance = getDistance(HOST_LAT, HOST_LON, studentLat, studentLon);
+
+          if (distance <= RADIUS) {
+            const studentName = document.getElementById('studentName').value.trim();
+            const studentID = document.getElementById('studentID').value.trim();
+            const attendanceDate = document.getElementById('attendanceDate').value;
+            const attendanceStatus = document.getElementById('attendanceStatus').value;
+
+            if (studentName && studentID && attendanceDate && attendanceStatus) {
+              const attendanceKey = attendanceStatus === 'Present' ? attendanceDate : `${attendanceDate} (${attendanceStatus})`;
+              attendanceData.push(attendanceKey);
+
+              initializeCalendar(); // Update calendar and counts
+              attendanceForm.reset();
+            } else {
+              alert('Please fill out all fields');
+            }
+          } else {
+            alert('You are not within the required radius to sign in.');
+          }
+        }, function (error) {
+          alert('Unable to retrieve your location. Please ensure location services are enabled.');
+        });
+      });
+
+      // Initial calendar render
+      initializeCalendar();
+    });
   </script>
 
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
