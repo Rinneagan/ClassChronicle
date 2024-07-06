@@ -5,13 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Log into account</title>
   <link rel="stylesheet" href="style.css">
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
 </head>
 <body>
   <div class="wrapper">
-    <form id="signin-form" action="#">
+    <form id="signin-form">
       <h2>Login</h2>
       <div class="input-field">
         <input type="email" id="signin-email" required>
@@ -36,35 +33,27 @@
   </div>
 
   <script>
-    // Your web app's Firebase configuration
-    const firebaseConfig = {
-  apiKey: "AIzaSyBgPzEFtd4vcflglHooVqwwjIVgoQbYQzo",
-  authDomain: "classchronicle-1e21f.firebaseapp.com",
-  projectId: "classchronicle-1e21f",
-  storageBucket: "classchronicle-1e21f.appspot.com",
-  messagingSenderId: "456231496384",
-  appId: "1:456231496384:web:a9f441021b0689c9f71b25",
-  measurementId: "G-G5CECHDP6J"
-};
-
-    // Initialize Firebase
-    const app = firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-
     document.getElementById('signin-form').addEventListener('submit', function(event) {
       event.preventDefault();
       const email = document.getElementById('signin-email').value;
       const password = document.getElementById('signin-password').value;
 
-      auth.signInWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-          // Signed in
+      fetch('http://localhost:5000/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.token) {
           alert('Successfully signed in!');
+          localStorage.setItem('token', data.token);
           window.location.href = 'dashboard.html';
-        })
-        .catch((error) => {
-          alert(error.message);
-        });
+        } else {
+          alert(data.message);
+        }
+      })
+      .catch(error => console.error('Error:', error));
     });
   </script>
 </body>
