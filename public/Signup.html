@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,21 +12,22 @@
       <h2>Signup</h2>
       <div class="input-field">
         <input type="email" id="signup-email" required>
-        <label>Enter your email</label>
+        <label for="signup-email">Enter your email</label>
       </div>
       <div class="input-field">
         <input type="password" id="signup-password" required>
-        <label>Enter your password</label>
+        <label for="signup-password">Enter your password</label>
       </div>
       <div class="input-field">
         <input type="password" id="signup-confirm-password" required>
-        <label>Confirm your password</label>
+        <label for="signup-confirm-password">Confirm your password</label>
       </div>
       <button type="submit">Sign Up</button>
       <div class="register">
         <p>Already have an account? <a href="signin.html">Sign In</a></p>
       </div>
     </form>
+    <button id="google-signup" type="button" onclick="window.location.href='http://localhost:5500/auth/google'">Sign Up with Google</button>
   </div>
 
   <script>

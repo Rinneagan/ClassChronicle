@@ -5,9 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ClassChronicle</title>
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body {
       padding-top: 56px;
+      font-family: 'Outfit', sans-serif;
     }
     .hero {
       background: #f8f9fa;
@@ -38,19 +40,32 @@
       background-color: #ffc107;
       color: #fff;
     }
+    .video-background {
+      position: fixed;
+      right: 0;
+      bottom: 0;
+      min-width: 100%;
+      min-height: 100%;
+      z-index: -1;
+      filter: brightness(50%);
+    }
   </style>
 </head>
 <body>
+  <video class="video-background" autoplay loop muted playsinline>
+    <source src="https://videocdn.cdnpk.net/videos/8723e443-4b2d-4ac0-b148-3ea001dc6ac1/horizontal/previews/videvo_watermarked/large.mp4" type="video/webm">
+    Your browser does not support the video tag.
+  </video>
   <!-- Navigation Bar -->
   <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
-    <a class="navbar-brand" href="#">ClassChronicle</a>
+    <a class="navbar-brand" href="dashboard.html">ClassChronicle</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ml-auto">
         <li class="nav-item active">
-          <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+          <a class="nav-link" href="index.html">Home <span class="sr-only">(current)</span></a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="aboutus.html">About Us</a>
@@ -198,7 +213,7 @@
         const daysInMonth = new Date(year, month + 1, 0).getDate();
 
         let calendarHTML = '<table class="table table-bordered"><thead><tr>';
-        calendarHTML += '<th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th>';
+        calendarHTML += '<th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</<th>Sat</th>';
         calendarHTML += '</tr></thead><tbody><tr>';
 
         let dayOfWeek = new Date(year, month, 1).getDay();
@@ -307,3 +322,4 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
+

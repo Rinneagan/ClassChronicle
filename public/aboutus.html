@@ -5,11 +5,40 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>About Us - ClassChronicle</title>
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Outfit', sans-serif;
+    }
+    .navbar {
+      background-color: #006666;
+    }
+    .navbar-brand, .nav-link {
+      color: white !important;
+    }
+    .navbar-toggler-icon {
+      background-color: white;
+    }
+    .card {
+      margin-top: 100px;
+    }
+    .card-title {
+      font-weight: 700;
+    }
+    .card-text {
+      font-size: 1.2rem;
+      line-height: 1.6;
+    }
+    footer {
+      background-color: #006666;
+      color: white;
+    }
+  </style>
 </head>
 <body>
   <!-- Navigation Bar -->
-  <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
-    <a class="navbar-brand" href="#">ClassChronicle</a>
+  <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+    <a class="navbar-brand" href="dashboard.html">ClassChronicle</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -32,13 +61,34 @@
   </nav>
 
   <!-- About Us Content -->
-  <div class="container mt-5">
+  <div class="container">
     <div class="row justify-content-center">
       <div class="col-md-8">
-        <div class="card">
+        <div class="card shadow-lg">
           <div class="card-body">
             <h2 class="card-title text-center">About Us</h2>
-            <p class="card-text lead">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla volutpat, ligula quis feugiat consectetur, mi ex bibendum risus, nec consequat nulla velit et lectus.</p>
+            <p class="card-text lead">
+              ClassChronicle is dedicated to revolutionizing education through technology. Founded in 2020 by a team of passionate educators and developers, our mission is to empower teachers and students with innovative tools that enhance learning experiences and foster academic success.
+            </p>
+            <p class="card-text">
+              At ClassChronicle, we believe in the power of education to transform lives. Our platform offers a suite of features designed to streamline classroom management, engage students with interactive learning resources, and facilitate collaboration among educators worldwide.
+            </p>
+            <p class="card-text">
+              We are committed to continuous improvement and customer satisfaction. By listening to the needs of educators and leveraging cutting-edge technology, we strive to deliver solutions that make teaching more effective and learning more enjoyable.
+            </p>
+            <h3 class="mt-4 mb-3">Meet Our Team</h3>
+            <div class="row">
+              <div class="col-md-6">
+                <h5>John Doe</h5>
+                <p>Co-Founder & Lead Developer</p>
+                <p>John is passionate about education technology and has over 10 years of experience in software development.</p>
+              </div>
+              <div class="col-md-6">
+                <h5>Jane Smith</h5>
+                <p>Co-Founder & Education Specialist</p>
+                <p>Jane brings extensive teaching experience and curriculum development expertise to ClassChronicle.</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -46,7 +96,7 @@
   </div>
 
   <!-- Footer Section -->
-  <footer class="bg-light text-center py-4 fixed-bottom">
+  <footer class="text-center py-4">
     <div class="container">
       <p class="m-0">© 2024 ClassChronicle. All Rights Reserved.</p>
     </div>
