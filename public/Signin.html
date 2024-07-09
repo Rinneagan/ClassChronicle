@@ -18,6 +18,13 @@
         <input type="password" id="signin-password" required>
         <label>Enter your password</label>
       </div>
+      <div class="input-field">
+        <label for="role">Role:</label>
+        <select id="role" required>
+          <option value="student">Student</option>
+          <option value="teacher">Teacher</option>
+        </select>
+      </div>
       <div class="forget">
         <label for="remember">
           <input type="checkbox" id="remember">
@@ -37,11 +44,12 @@
       event.preventDefault();
       const email = document.getElementById('signin-email').value;
       const password = document.getElementById('signin-password').value;
+      const role = document.getElementById('role').value;
 
       fetch('http://localhost:5500/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password, role }),
       })
       .then(response => response.json())
       .then(data => {
