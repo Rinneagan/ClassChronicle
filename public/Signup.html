@@ -29,7 +29,8 @@
           <option value="teacher">Teacher</option>
         </select>
       </div>
-      <button type="submit">Sign Up</button>
+      <div id="signup-message" role="alert" aria-live="polite" style="color: #ff4d4d; margin-bottom: 10px; font-size: 14px; text-align: center;"></div>
+      <button type="submit" id="signup-btn">Sign Up</button>
       <div class="register">
         <p>Already have an account? <a href="signin.html">Sign In</a></p>
       </div>
@@ -44,8 +45,16 @@
       const password = document.getElementById('signup-password').value;
       const confirmPassword = document.getElementById('signup-confirm-password').value;
       const role = document.getElementById('role').value;
+      const signupMessage = document.getElementById('signup-message');
+      const submitBtn = document.getElementById('signup-btn');
+
+      signupMessage.textContent = '';
+      signupMessage.style.color = '#ff4d4d';
 
       if (password === confirmPassword) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Signing up...';
+
         fetch('http://localhost:5500/api/register', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -54,15 +63,25 @@
         .then(response => response.json())
         .then(data => {
           if (data.message === 'User registered successfully') {
-            alert('Successfully signed up!');
-            window.location.href = 'signin.html';
+            signupMessage.style.color = '#4caf50';
+            signupMessage.textContent = 'Successfully signed up!';
+            setTimeout(() => {
+              window.location.href = 'signin.html';
+            }, 1000);
           } else {
-            alert(data.message);
+            signupMessage.textContent = data.message;
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Sign Up';
           }
         })
-        .catch(error => console.error('Error:', error));
+        .catch(error => {
+          console.error('Error:', error);
+          signupMessage.textContent = 'An error occurred. Please try again.';
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Sign Up';
+        });
       } else {
-        alert('Passwords do not match.');
+        signupMessage.textContent = 'Passwords do not match.';
       }
     });
   </script>

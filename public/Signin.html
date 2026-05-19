@@ -32,7 +32,8 @@
         </label>
         <a href="#">Forgot password?</a>
       </div>
-      <button type="submit">Log In</button>
+      <div id="signin-message" role="alert" aria-live="polite" style="color: #ff4d4d; margin-bottom: 10px; font-size: 14px; text-align: center;"></div>
+      <button type="submit" id="signin-btn">Log In</button>
       <div class="register">
         <p>Don't have an account? <a href="signup.html">Sign Up</a></p>
       </div>
@@ -45,6 +46,13 @@
       const email = document.getElementById('signin-email').value;
       const password = document.getElementById('signin-password').value;
       const role = document.getElementById('role').value;
+      const signinMessage = document.getElementById('signin-message');
+      const submitBtn = document.getElementById('signin-btn');
+
+      signinMessage.textContent = '';
+      signinMessage.style.color = '#ff4d4d';
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Logging in...';
 
       fetch('http://localhost:5500/api/login', {
         method: 'POST',
@@ -54,14 +62,24 @@
       .then(response => response.json())
       .then(data => {
         if (data.token) {
-          alert('Successfully signed in!');
+          signinMessage.style.color = '#4caf50';
+          signinMessage.textContent = 'Successfully signed in!';
           localStorage.setItem('token', data.token);
-          window.location.href = 'dashboard.html';
+          setTimeout(() => {
+            window.location.href = 'dashboard.html';
+          }, 500);
         } else {
-          alert(data.message);
+          signinMessage.textContent = data.message;
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Log In';
         }
       })
-      .catch(error => console.error('Error:', error));
+      .catch(error => {
+        console.error('Error:', error);
+        signinMessage.textContent = 'An error occurred. Please try again.';
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Log In';
+      });
     });
   </script>
 </body>

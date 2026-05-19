@@ -111,6 +111,11 @@ h2 {
   text-decoration: underline;
 }
 
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible {
+  outline: 2px solid #ffa100;
+  outline-offset: 2px;
+}
+
 button {
   background: #fff;
   color: #000;

@@ -65,16 +65,16 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ml-auto">
         <li class="nav-item active">
-          <a class="nav-link" href="index.html">Home <span class="sr-only">(current)</span></a>
+          <a class="nav-link" href="dashboard.html">Home <span class="sr-only">(current)</span></a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="aboutus.html">About Us</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#" onclick="logout()">Logout</a>
+          <a class="nav-link" href="contact.html">Contact</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="contact.html">Contact</a>
+          <a class="nav-link" href="#" onclick="logout()">Logout</a>
         </li>
       </ul>
     </div>
@@ -115,7 +115,8 @@
                 <option value="Late">Late</option>
               </select>
             </div>
-            <button type="submit" class="btn btn-primary btn-block">Submit</button>
+            <div id="attendance-message" role="alert" aria-live="polite" style="color: #ff4d4d; margin-bottom: 10px; font-size: 14px; text-align: center;"></div>
+            <button type="submit" class="btn btn-primary btn-block" id="attendance-btn">Submit</button>
           </form>
         </div>
       </div>
@@ -283,6 +284,12 @@
       attendanceForm.addEventListener('submit', function (event) {
         event.preventDefault();
 
+        const attendanceMessage = document.getElementById('attendance-message');
+        const submitBtn = document.getElementById('attendance-btn');
+        attendanceMessage.textContent = 'Checking location...';
+        attendanceMessage.style.color = '#333';
+        submitBtn.disabled = true;
+
         // Get student location
         navigator.geolocation.getCurrentPosition(function (position) {
           const studentLat = position.coords.latitude;
@@ -301,14 +308,22 @@
 
               initializeCalendar(); // Update calendar and counts
               attendanceForm.reset();
+              attendanceMessage.style.color = '#4caf50';
+              attendanceMessage.textContent = 'Attendance recorded successfully.';
+              setTimeout(() => { attendanceMessage.textContent = ''; }, 3000);
             } else {
-              alert('Please fill out all fields');
+              attendanceMessage.style.color = '#ff4d4d';
+              attendanceMessage.textContent = 'Please fill out all fields';
             }
           } else {
-            alert('You are not within the required radius to sign in.');
+            attendanceMessage.style.color = '#ff4d4d';
+            attendanceMessage.textContent = 'You are not within the required radius to sign in.';
           }
+          submitBtn.disabled = false;
         }, function (error) {
-          alert('Unable to retrieve your location. Please ensure location services are enabled.');
+          attendanceMessage.style.color = '#ff4d4d';
+          attendanceMessage.textContent = 'Unable to retrieve your location. Please ensure location services are enabled.';
+          submitBtn.disabled = false;
         });
       });
 
