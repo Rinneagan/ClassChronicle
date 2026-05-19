@@ -1,0 +1,3 @@
+## 2024-05-19 - Added missing label associations in Signin.html
+**Learning:** Found input fields missing explicitly associated labels via `for` attributes in the Signin form. While `<label>` tags were placed sequentially near the `<input>` tags, screen readers heavily rely on either explicitly nested `<label><input/></label>` wrapping or strict `for="id"` attributes to ensure users properly understand which inputs fields they correspond to, especially when visually offset.
+**Action:** Always ensure that `for` attributes are added to `<label>` tags that are intended to describe specific `<input>` fields, matching the input's `id` perfectly.
